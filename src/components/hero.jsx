@@ -4,7 +4,7 @@ import Button from "./Button";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 
-const hero = () => {
+const Hero = () => {
     const [currentIndex, setCurrentIndex] = useState(1);
     const [hasClicked, setHasClicked] = useState(false);
 
@@ -37,7 +37,7 @@ const hero = () => {
                 ease:'power1.inOut',
                 onStart:()=>nextVideoRef.current.play(),
             });
-            gsap.fromTo("#current-video",{
+            gsap.from("#current-video",{
                 transformOrigin:'center center',
                 scale:0,
                 duration:1.5,
@@ -45,7 +45,10 @@ const hero = () => {
         });
     }
     
-       }, {dependencies:[currentIndex],revertOnUpdate:true});
+    },   
+        {
+            dependencies:[currentIndex],revertOnUpdate:true
+        });
 
     
 
@@ -84,7 +87,7 @@ const hero = () => {
                 onLoadedData={handleVideoLoad}
                 />
             </div>
-            <h1 className="special-font hero-heading absolute bootom-5 right-5 z-40 text-blue-75">
+            <h1 className="special-font hero-heading absolute bottom-5 right-5 z-40 text-blue-75">
                 G<b>a</b>ming
             </h1>
             <div className="absolute left-0 top-0 z-40 size-full">
@@ -106,7 +109,7 @@ const hero = () => {
                 </div>
             </div>
         </div>
-            <h1 className="special-font hero-heading absolute bootom-5 right-5 text-black">
+            <h1 className="special-font hero-heading absolute bottom-5 right-5 text-black">
                 G<b>a</b>ming
             </h1>
     </div>
