@@ -1,22 +1,26 @@
-import React, { useRef, useState } from 'react'
-import { useState } from 'react';
+import  { useRef, useState } from "react";
+
 
 const hero = () => {
     const [currentIndex, setCurrentIndex] = useState(1);
     const [hasClicked, setHasClicked] = useState(false);
+
     const [isLoading, setIsLoading] = useState(true);
     const [LoadedVideos, SetLoadedVideos] = useState(0);
 
-    const totalvideos = 4;
+    const totalVideos = 3;
     const nextVideoRef = useRef(null);
 
     const handleVideoLoad = () => {
         SetLoadedVideos((prev) => prev + 1);
     }
+
+    const upcomingVideoIndex = (currentIndex % totalVideos) + 1;
+
     const handleMiniVdClick = () => {
         setHasClicked(true);
 
-        SetCurrentIndex((prevIndex) => prevIndex + 1);         
+        setCurrentIndex((prevIndex) => (prevIndex % totalVideos) + 1);         
     }
 
     const getVideoSrc =(index) => `videos/hero-${index}.mp4`;
@@ -37,6 +41,21 @@ const hero = () => {
                         />
                     </div>
                 </div>
+                <video
+                ref={nextVideoRef}
+                src={getVideoSrc(currentIndex)}
+                loop
+                muted
+                id="next-video"
+                className="absolute-center invisible absolute z-20 size-64 object-cover object-center"
+                />
+                <video
+                src={getVideoSrc(currentIndex === totalVideos - 1 ? 1 : currentIndex)}
+                autoPlay
+                loop
+                muted
+                className="absolute left-0 top-0 size-full object-cover"
+                />
             </div>
         </div>
     </div>
