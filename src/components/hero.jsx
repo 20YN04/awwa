@@ -5,7 +5,7 @@ import { TiLocationArrow } from "react-icons/ti";
 import { useEffect, useRef, useState } from "react";
 
 import Button from "./Button";
-import VideoPreview from "./VideoPreview";
+import { VideoPreview } from "./VideoPreview";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -80,7 +80,7 @@ const Hero = () => {
     });
   });
 
-  const getVideoSrc = (index) => `videos/hero-${index}.mp4`;
+  const getVideoSrc = (index) => `videos/Hero-${index}.mp4`;
 
   return (
     <div className="relative h-dvh w-screen overflow-x-hidden">
