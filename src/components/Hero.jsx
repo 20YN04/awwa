@@ -7,9 +7,10 @@ import { useRef, useState } from "react";
 import Button from "./Button";
 import { VideoPreview } from "./VideoPreview";
 
-gsap.registerPlugin(ScrollTrigger);
+gsap.registerPlugin(useGSAP, ScrollTrigger);
 
 const Hero = () => {
+  const containerRef = useRef(null);
   const [currentIndex, setCurrentIndex] = useState(1);
   const [hasClicked, setHasClicked] = useState(false);
 
@@ -64,6 +65,7 @@ const Hero = () => {
     {
       dependencies: [currentIndex],
       revertOnUpdate: true,
+      scope: containerRef,
     }
   );
 
@@ -83,12 +85,12 @@ const Hero = () => {
         scrub: true,
       },
     });
-  });
+  }, { scope: containerRef });
 
   const getVideoSrc = (index) => `videos/hero-${index}.mp4`;
 
   return (
-    <div className="relative h-dvh w-screen overflow-x-hidden">
+    <div ref={containerRef} className="relative h-dvh w-screen overflow-x-hidden">
       {loading && (
         <div
           role="status"
