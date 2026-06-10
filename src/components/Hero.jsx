@@ -2,7 +2,7 @@ import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/all";
 import { TiLocationArrow } from "react-icons/ti";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 
 import Button from "./Button";
 import { VideoPreview } from "./VideoPreview";
@@ -13,21 +13,17 @@ const Hero = () => {
   const [currentIndex, setCurrentIndex] = useState(1);
   const [hasClicked, setHasClicked] = useState(false);
 
-  const [loading, setLoading] = useState(true);
   const [loadedVideos, setLoadedVideos] = useState(0);
 
   const totalVideos = 4;
+  // Three <video> elements render on mount; the loader clears once each has
+  // either loaded or errored, so a failed video can't hang the loader forever.
+  const loading = loadedVideos < totalVideos - 1;
   const nextVdRef = useRef(null);
 
   const handleVideoLoad = () => {
     setLoadedVideos((prev) => prev + 1);
   };
-
-  useEffect(() => {
-    if (loadedVideos === totalVideos - 1) {
-      setLoading(false);
-    }
-  }, [loadedVideos]);
 
   const handleMiniVdClick = () => {
     setHasClicked(true);
@@ -46,7 +42,9 @@ const Hero = () => {
           height: "100%",
           duration: 1,
           ease: "power1.inOut",
-          onStart: () => nextVdRef.current.play(),
+          // play() can reject (e.g. autoplay policy); don't let it surface as
+          // an unhandled rejection — the tween still reveals the video.
+          onStart: () => nextVdRef.current?.play().catch(() => {}),
         });
         gsap.from("#current-video", {
           transformOrigin: "center center",
@@ -107,13 +105,13 @@ const Hero = () => {
                 className="origin-center scale-50 opacity-0 transition-all duration-500 ease-in hover:scale-100 hover:opacity-100"
               >
                 <video
-                  ref={nextVdRef}
                   src={getVideoSrc((currentIndex % totalVideos) + 1)}
                   loop
                   muted
                   id="current-video"
                   className="size-64 origin-center scale-150 object-cover object-center"
                   onLoadedData={handleVideoLoad}
+                  onError={handleVideoLoad}
                 />
               </div>
             </VideoPreview>
@@ -127,6 +125,7 @@ const Hero = () => {
             id="next-video"
             className="absolute-center invisible absolute z-20 size-64 object-cover object-center"
             onLoadedData={handleVideoLoad}
+            onError={handleVideoLoad}
           />
           <video
             src={getVideoSrc(
@@ -137,6 +136,7 @@ const Hero = () => {
             muted
             className="absolute left-0 top-0 size-full object-cover object-center"
             onLoadedData={handleVideoLoad}
+            onError={handleVideoLoad}
           />
         </div>
 
