@@ -15,7 +15,12 @@ const page = await ctx.newPage();
 const log = [];
 page.on("console", (m) => log.push(`[${m.type()}] ${m.text()}`));
 page.on("pageerror", (e) => log.push(`PAGEERROR: ${e.message}\n${e.stack ?? ""}`));
-page.on("requestfailed", (r) => log.push(`REQFAIL: ${r.failure()?.errorText} ${r.url()}`));
+page.on("requestfailed", (r) => {
+  // ERR_ABORTED = the browser/page cancelled the request itself (e.g. media
+  // preload aborted before a range re-request) — not a network failure.
+  if (r.failure()?.errorText === "net::ERR_ABORTED") return;
+  log.push(`REQFAIL: ${r.failure()?.errorText} ${r.url()}`);
+});
 page.on("response", (r) => {
   if (r.status() >= 400) log.push(`HTTP ${r.status()} ${r.url()}`);
 });
